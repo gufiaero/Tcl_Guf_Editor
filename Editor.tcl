@@ -1,3 +1,4 @@
+#hacer como esto: bind . destroy exit_command
 package require Tk
 
 set filename "Untitled"
@@ -61,7 +62,6 @@ proc open_command {} {
 					set file [open $filename r]
                     set the_text [read $file]
                     .t replace 1.0 end $the_text
-                    wm title . "Editor - $filename"
 				    set texto_a_verificar [.t get 1.0 end]
 					set fue_guardado 1
 					wm title . "Editor - $filename"
@@ -143,7 +143,27 @@ proc save_as_command {} {
 }
 
 proc exit_command {} {
-	exit
+    global filename
+    global texto_a_verificar
+	set text_area_text [.t get 1.0 end]
+	if {$text_area_text ne $texto_a_verificar} {
+        puts "verdadero"
+        set answer [tk_messageBox -message "Do you want to save changes to $filename?" \
+                                  -icon question \
+                                  -type yesnocancel \
+                                  -title editor]
+        switch $answer {
+			yes {
+				save_as_command
+                exit
+			}
+			no {
+				exit
+			}
+		}
+	} else {
+		exit
+    }
 }
 
 menu .m -type menubar
