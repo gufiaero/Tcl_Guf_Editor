@@ -186,3 +186,7 @@ pack .t -fill both -expand true
 focus .t
 
 set text_to_check [.t get 1.0 end]
+wm protocol . WM_DELETE_WINDOW {
+    # Do whatever you like here
+    exit_command
+}
