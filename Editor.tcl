@@ -2,15 +2,15 @@
 package require Tk
 
 set filename "Untitled"
-set fue_guardado 0
-set texto_a_verificar ""
+set was_saved 0
+set text_to_check ""
 
 #Procedimientos del menu
 proc new_command {} {
     global filename
-    global texto_a_verificar
+    global text_to_check
 	set text_area_text [.t get 1.0 end]
-	if {$text_area_text ne $texto_a_verificar} {
+	if {$text_area_text ne $text_to_check} {
         set answer [tk_messageBox -message "Do you want to save changes to $filename?" \
                                   -icon question \
                                   -type yesnocancel \
@@ -20,31 +20,31 @@ proc new_command {} {
 				save_as_command
 				#Despues poner lo siguiente en una funcion porque se hace 3 veces.
 				.t delete 1.0 end
-				set texto_a_verificar [.t get 1.0 end]
+				set text_to_check [.t get 1.0 end]
 				set filename "Untitled"
                 wm title . "Editor - $filename"
 			}
 			no {
 				.t delete 1.0 end
-				set texto_a_verificar [.t get 1.0 end]
+				set text_to_check [.t get 1.0 end]
 				set filename "Untitled"
                 wm title . "Editor - $filename"
 			}
 		}
 	} else {
 		.t delete 1.0 end
-		set texto_a_verificar [.t get 1.0 end]
+		set text_to_check [.t get 1.0 end]
 		set filename "Untitled"
 		wm title . "Editor - $filename"
     }
 }
 
 proc open_command {} {
-    global texto_a_verificar
-    global fue_guardado
+    global text_to_check
+    global was_saved
     global filename
 	set text_area_text [.t get 1.0 end]
-	if {$text_area_text ne $texto_a_verificar} {
+	if {$text_area_text ne $text_to_check} {
 		global filename
         set answer [tk_messageBox -message "Do you want to save changes to $filename?" \
 								  -icon question \
@@ -62,8 +62,8 @@ proc open_command {} {
 					set file [open $filename r]
                     set the_text [read $file]
                     .t replace 1.0 end $the_text
-				    set texto_a_verificar [.t get 1.0 end]
-					set fue_guardado 1
+				    set text_to_check [.t get 1.0 end]
+					set was_saved 1
 					wm title . "Editor - $filename"
 				} trap {POSIX ENOENT} {} {
 					#do nothing
@@ -79,9 +79,8 @@ proc open_command {} {
 					set file [open $filename r]
                     set the_text [read $file]
                     .t replace 1.0 end $the_text
-                    wm title . "Editor - $filename"
-				    set texto_a_verificar [.t get 1.0 end]
-					set fue_guardado 1
+				    set text_to_check [.t get 1.0 end]
+					set was_saved 1
 					wm title . "Editor - $filename"
 				} trap {POSIX ENOENT} {} {
 					#do nothing
@@ -98,9 +97,8 @@ proc open_command {} {
 			set file [open $filename r]
 			set the_text [read $file]
 			.t replace 1.0 end $the_text
-			wm title . "Editor - $filename"
-			set texto_a_verificar [.t get 1.0 end]
-			set fue_guardado 1
+			set text_to_check [.t get 1.0 end]
+			set was_saved 1
 			wm title . "Editor - $filename"
 		} trap {POSIX ENOENT} {} {
 			#do nothing
@@ -109,8 +107,8 @@ proc open_command {} {
 }
 
 proc save_command {} {
-	global fue_guardado
-	if {$fue_guardado eq 0} {
+	global was_saved
+	if {$was_saved eq 0} {
 		save_as_command
 	} else {
 		global filename
@@ -123,7 +121,7 @@ proc save_command {} {
 
 proc save_as_command {} {
     global filename
-    global fue_guardado
+    global was_saved
 	set types {
 		{{Text Files} {.txt}}
         {{All Files}   *       }
@@ -135,7 +133,7 @@ proc save_as_command {} {
 		set text_widget_text [.t get 1.0 end]
 		puts $file $text_widget_text 
 		close $file
-		set fue_guardado 1
+		set was_saved 1
 		wm title . "Editor - $filename"
 	} trap {POSIX ENOENT} {} {
 		#do nothing
@@ -144,10 +142,9 @@ proc save_as_command {} {
 
 proc exit_command {} {
     global filename
-    global texto_a_verificar
+    global text_to_check
 	set text_area_text [.t get 1.0 end]
-	if {$text_area_text ne $texto_a_verificar} {
-        puts "verdadero"
+	if {$text_area_text ne $text_to_check} {
         set answer [tk_messageBox -message "Do you want to save changes to $filename?" \
                                   -icon question \
                                   -type yesnocancel \
@@ -188,4 +185,4 @@ pack .t -fill both -expand true
 
 focus .t
 
-set texto_a_verificar [.t get 1.0 end]
+set text_to_check [.t get 1.0 end]
